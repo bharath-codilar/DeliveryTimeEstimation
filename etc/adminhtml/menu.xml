@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Codilar_DeliveryTimeEstimation::manager"
+             title="Delivery Estimation"
+             module="Codilar_DeliveryTimeEstimation"
+             sortOrder="20"
+             resource="Codilar_DeliveryTimeEstimation::manager"
+        />
+        <add id="Codilar_DeliveryTimeEstimation::show_delivery_time"
+             title="Delivery Time Estimation"
+             module="Codilar_DeliveryTimeEstimation"
+             sortOrder="20"
+             parent="Codilar_DeliveryTimeEstimation::manager"
+             action="deliverytime/index"
+             resource="Codilar_DeliveryTimeEstimation::show_delivery_time"/>
+
+    </menu>
+</config>
