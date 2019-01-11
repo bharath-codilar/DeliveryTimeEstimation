@@ -1,0 +1,20 @@
+<div data-bind="scope: 'knockout-deliverytime'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
+
+<
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "knockout-deliverytime": {
+                        "component": "Codilar_DeliveryTimeEstimation/js/delivery_time",
+                        "template" : "Codilar_DeliveryTimeEstimation/delivery_time"
+                    }
+                }
+            }
+        }
+    }
+</script>
