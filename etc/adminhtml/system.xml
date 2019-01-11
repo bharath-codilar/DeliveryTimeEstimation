@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<system>
+    <tab id="codilar" translate="label" sortOrder="100" class="codilar-tab">
+        <label>Codilar</label>
+    </tab>
+    <section id="deliverytime" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+        <resource>Codilar_DeliveryTimeEstimation::codilar</resource>
+        <class>separator-top</class>
+        <label>Delivery Time Settings</label>
+        <tab>codilar</tab>
+        <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+            <label>Delivery Time Settings</label>
+            <field id="api" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>API key</label>
+            </field>
+            <field id="packagetime" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Package Time</label>
+                <comment>Enter Packaging Time per item in minutes.</comment>
+            </field>
+        </group>
+    </section>
+</system>
+</config>
