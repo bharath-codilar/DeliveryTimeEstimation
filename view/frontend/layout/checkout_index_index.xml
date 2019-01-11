@@ -16,11 +16,8 @@
                                                     <item name="children" xsi:type="array">
                                                         <item name="afterMethods" xsi:type="array">
                                                             <item name="children" xsi:type="array">
-                                                                <item name="culturepass" xsi:type="array">
+                                                                <item name="deliverytime" xsi:type="array">
                                                                     <item name="component" xsi:type="string">Codilar_DeliveryTimeEstimation/js/delivery_time</item>
-                                                                    <!--<item name="displayArea" xsi:type="string">-->
-                                                                    <!--messages-->
-                                                                    <!--</item>-->
                                                                 </item>
                                                             </item>
                                                         </item>
