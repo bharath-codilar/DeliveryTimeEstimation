@@ -8,4 +8,8 @@
             </argument>
         </arguments>
     </type>
+
+    <preference for="Codilar\DeliveryTimeEstimation\Api\GoogleMapsInterface"
+                type="Codilar\DeliveryTimeEstimation\Model\GoogleMaps" />
+
 </config>

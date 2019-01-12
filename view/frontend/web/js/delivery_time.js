@@ -9,7 +9,6 @@ define(
             defaults: {
                 template: 'Codilar_DeliveryTimeEstimation/delivery_time'
             },
-            distance: window.checkoutConfig.distance,
             time: window.checkoutConfig.time,
             initialize: function () {
                 this._super();

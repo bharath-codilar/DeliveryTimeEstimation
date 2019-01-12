@@ -9,10 +9,12 @@
 namespace Codilar\DeliveryTimeEstimation\Model\CustomerData;
 
 
+use Codilar\DeliveryTimeEstimation\Helper\Data;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Checkout\Model\Session;
 use Psr\Log\LoggerInterface;
-use Codilar\DeliveryTimeEstimation\Helper\MapsApi;
+use Codilar\DeliveryTimeEstimation\Api\GoogleMapsInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 
 class DeliveryTime implements ConfigProviderInterface
 {
@@ -25,25 +27,39 @@ class DeliveryTime implements ConfigProviderInterface
      */
     private $logger;
     /**
-     * @var MapsApi
+     * @var GoogleMapsInterface
      */
-    private $mapsApi;
+    private $googleMaps;
+    /**
+     * @var Data
+     */
+    private $data;
+    /**
+     * @var TimezoneInterface
+     */
+    private $timezone;
 
     /**
      * DeliveryTime constructor.
      * @param Session $checkoutSession
      * @param LoggerInterface $logger
-     * @param MapsApi $mapsApi
+     * @param Data $data
+     * @param GoogleMapsInterface $googleMaps
+     * @param TimezoneInterface $timezone
      */
     public function __construct(
         Session $checkoutSession,
         LoggerInterface $logger,
-        MapsApi $mapsApi
-    )
+        Data $data,
+        GoogleMapsInterface $googleMaps,
+        TimezoneInterface $timezone
+     )
     {
         $this->checkoutSession = $checkoutSession;
         $this->logger = $logger;
-        $this->mapsApi = $mapsApi;
+        $this->googleMaps = $googleMaps;
+        $this->data = $data;
+        $this->timezone = $timezone;
     }
 
     /**
@@ -56,15 +72,23 @@ class DeliveryTime implements ConfigProviderInterface
         /** @var \Magento\Quote\Model\Quote\Address $address */
         $address = $this->checkoutSession->getQuote()->getShippingAddress();
         $this->logger->info($address->getPostcode());
-        $fullAddress = preg_replace('/#/', '', $address->getStreetFull()).' '.$address->getCity().' '.$address->getPostcode();
-        $result = str_replace(' ', '+', $fullAddress);
-        $result = str_replace("\n", '+', $result);
-        $this->logger->info((string)$fullAddress);
-        $this->logger->info((string)$result);
-        $apiData = $this->mapsApi->getCustomerLocation($result);
-        $passVariables['distance'] = $apiData['routes'][0]['legs'][0]['distance']['text'];
-//        $passVariables['time'] = $apiData['routes'][0]['legs'][0]['duration']['text'];
-        $passVariables['time'] = "Ti
+        $response = $this->googleMaps->getLocation($address);
+        $travelTime = $response['rows'][0]['elements'][0]['duration']['text'];
+//        $travelTime =  "1 hour 30 mins";  hard code time to c value
+        $passVariables['time'] = $this->getTotalDeliveryTime($travelTime);
         return $passVariables;
+    }
+
+    public function getTotalDeliveryTime($travelTime) {
+        $totalPackingTime = $this->getTotalPackingTime()." mins";
+        $currentTime = $this->timezone->date()->format('h:i:s A');
+        $totalTime = strtotime( $travelTime, strtotime($totalPackingTime, strtotime($currentTime)));
+        return date('h:i A', $totalTime);
+    }
+
+    public function getTotalPackingTime() {
+        $qty = $this->checkoutSession->getQuote()->getItemsQty();
+        $packingTime = (int)str_replace('"', '', $this->data->getPackageTime());
+        return $qty * $packingTime;
     }
 }
