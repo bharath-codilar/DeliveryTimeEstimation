@@ -119,7 +119,7 @@ class DeliveryTime implements ConfigProviderInterface
         if ($currentDate < $totalTime->format('d')) {
             return "Your courier will be delivered by Tomorrow at ".$this->getWareHouseOpeningTime() ."'o clock";
         } else {
-            return $totalTime->format('d H:i:s');
+            return "Your courier will be delivered by ".$totalTime->format('h:i a');
         }
     }
 
