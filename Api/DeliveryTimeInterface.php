@@ -14,5 +14,5 @@ interface DeliveryTimeInterface
     /**
      * @return string
      */
-    public function latlong();
+    public function getOrderDetails();
 }

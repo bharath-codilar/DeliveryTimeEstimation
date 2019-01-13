@@ -10,32 +10,59 @@ namespace Codilar\DeliveryTimeEstimation\Model;
 
 
 use Codilar\DeliveryTimeEstimation\Api\DeliveryTimeInterface;
-//use Codilar\DeliveryTimeEstimation\Helper\MapsApi;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Codilar\DeliveryTimeEstimation\Helper\Address;
 
 class DeliveryTime implements DeliveryTimeInterface
 {
     /**
-     * @var MapsApi
+     * @var CollectionFactory
      */
-    private $mapsApiHelper;
+    private $orderCollectionFactory;
+    /**
+     * @var Address
+     */
+    private $addressHelper;
 
     /**
      * DeliveryTime constructor.
-     * @param MapsApi $mapsApiHelper
+     * @param CollectionFactory $orderCollectionFactory
+     * @param Address $addressHelper
      */
     public function __construct(
-//        MapsApi $mapsApiHelper
+        CollectionFactory $orderCollectionFactory,
+        Address $addressHelper
     )
     {
-//        $this->mapsApiHelper = $mapsApiHelper;
+        $this->orderCollectionFactory = $orderCollectionFactory;
+        $this->addressHelper = $addressHelper;
     }
 
-//    /**
-//     * @return string
-//     */
-    public function latlong()
+    /**
+     * @return string
+     */
+    public function getOrderDetails()
     {
-        return "sdf";
-//        return $this->mapsApiHelper->getLatLong();
+        $orders = $this->orderCollectionFactory->create();
+        $orderData = $orders->addFieldToFilter('status', 'complete')->load();
+        $response['store'] = array(
+            "store" => "Codilar Technologies",
+            "latitude" => "12.9161° N",
+            "longitude" => "77.6156° E"
+        );
+        $arr = array();
+        /** @var  \Magento\Sales\Model\Order $order */
+        foreach ($orderData as $order) {
+            $arr[$order->getId()] = array(
+                "oder_id" => $order->getId(),
+              "customer_name" => $order->getCustomerName(),
+                "latitude" => $order->getData('latitude'),
+                "longitude" => $order->getData('longitude')
+            );
+        }
+        $response['orders'] = $arr;
+
+//        return json_encode($response);
+        return $response;
     }
 }
