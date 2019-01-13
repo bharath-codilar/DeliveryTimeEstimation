@@ -91,14 +91,52 @@ class DeliveryTime implements ConfigProviderInterface
         return $passVariables;
     }
 
-    public function getTotalDeliveryTime($travelTime) {
-        $totalPackingTime = $this->getTotalPackingTime()." mins";
-        $currentTime = $this->timezone->date()->format('h:i:s A');
-        $totalTime = strtotime( $travelTime, strtotime($totalPackingTime, strtotime($currentTime)));
-        return date('h:i A', $totalTime);
+    public function getTotalDeliveryTime($travelTimeDuration) {
+        $packingTimeDuration = $this->getTotalPackingTimeDuration();
+        $currentDate = (int)$this->getCurrentDateTime()->format('d');
+        $currentTime = $this->getCurrentDateTime();
+        $totalTime = $currentTime;
+        $totalTime = $currentTime->add(new \DateInterval('PT'.$packingTimeDuration.'M'));
+
+        preg_match_all('!\d+!', $travelTimeDuration, $values);
+        $values = $values[0];
+
+        preg_match_all('/([a-zA-Z]|xC3[x80-x96x98-xB6xB8-xBF]|xC5[x92x93xA0xA1xB8xBDxBE]){3,}/', $travelTimeDuration, $labels);
+        $labels = $labels[0];
+
+        $finalarray = array_merge_recursive($labels,$values);
+
+        for ($x=0; $x <= count($finalarray)/2-1; $x++) {
+            if ($finalarray[$x] === 'min' || $finalarray[$x] === 'mins') {
+                $totalTime = $totalTime->add(new \DateInterval('PT'.$finalarray[$x+count($finalarray)/2].'M'));
+            } elseif ($finalarray[$x] === 'hour' || $finalarray[$x] === 'hours') {
+                $totalTime = $totalTime->add(new \DateInterval('PT'.$finalarray[$x+count($finalarray)/2].'H'));
+            } elseif ($finalarray[$x] === 'day' || $finalarray[$x] === 'days') {
+                $totalTime = $totalTime->add(new \DateInterval('P'.$finalarray[$x+count($finalarray)/2].'D'));
+            }
+        }
+
+        if ($currentDate < $totalTime->format('d')) {
+            return "Your courier will be delivered by Tomorrow at ".$this->getWareHouseOpeningTime() ."'o clock";
+        } else {
+            return $totalTime->format('d H:i:s');
+        }
     }
 
-    public function getTotalPackingTime() {
+    public function getCurrentDateTime() {
+        return $this->timezone->date();
+    }
+
+    public function getWareHouseOpeningTime() {
+        return (int)str_replace('"', '', $this->data->getWareHouseTimeOpen());
+    }
+
+    public function getWareHouseClosingTime() {
+        return (int)str_replace('"', '', $this->data->getWareHouseTimeClose());
+//        return $this->data->getWareHouseTimeClose();
+    }
+
+    public function getTotalPackingTimeDuration() {
         $qty = $this->checkoutSession->getQuote()->getItemsQty();
         $packingTime = (int)str_replace('"', '', $this->data->getPackageTime());
         return $qty * $packingTime;
