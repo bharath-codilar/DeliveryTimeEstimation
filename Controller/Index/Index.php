@@ -9,6 +9,7 @@
 namespace Codilar\DeliveryTimeEstimation\Controller\Index;
 
 
+use Codilar\DeliveryTimeEstimation\Model\CustomerData\DeliveryTime;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ResponseInterface;
@@ -20,19 +21,26 @@ class Index extends Action
      * @var PageFactory
      */
     private $pageFactory;
+    /**
+     * @var DeliveryTime
+     */
+    private $deliveryTime;
 
     /**
      * Index constructor.
      * @param Context $context
      * @param PageFactory $pageFactory
+     * @param DeliveryTime $deliveryTime
      */
     public function __construct(
         Context $context,
-        PageFactory $pageFactory
+        PageFactory $pageFactory,
+        DeliveryTime $deliveryTime
     )
     {
         parent::__construct($context);
         $this->pageFactory = $pageFactory;
+        $this->deliveryTime = $deliveryTime;
     }
 
     /**
@@ -45,10 +53,13 @@ class Index extends Action
      */
     public function execute()
     {
-        return $this->pageFactory->create();
+//        return $this->pageFactory->create();
+        $this->deliveryTime->getTotalDeliveryTime();
+//        var_dump($this->deliveryTime->getTotalDeliveryTime());
+
     }
 
     public function getMapsData(){
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=AIzaSyCgJic5ZawDAttM6EJhShjEzw-CWfBYGyA";
+        return "MapsData";
     }
 }
