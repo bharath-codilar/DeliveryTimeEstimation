@@ -47,8 +47,8 @@ class DeliveryTime implements DeliveryTimeInterface
         $orderData = $orders->addFieldToFilter('status', 'complete')->load();
         $response['store'] = array(
             "store" => "Codilar Technologies",
-            "latitude" => "12.9161° N",
-            "longitude" => "77.6156° E"
+            "latitude" => "12.916074",
+            "longitude" => "77.6156776"
         );
         $arr = array();
         /** @var  \Magento\Sales\Model\Order $order */
