@@ -15,12 +15,20 @@
                 <label>API key</label>
             </field>
             <field id="packagetime" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>Package Time</label>
-                <comment>Enter Packaging Time per item in minutes.</comment>
+                <label>Package Time Duration</label>
+                <comment>Enter Packaging Time Duration per item in minutes.</comment>
             </field>
             <field id="warehouse" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Ware house</label>
                 <comment>Enter Warehouse address.</comment>
+            </field>
+            <field id="timeopen" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Ware house Open Time</label>
+                <comment>Enter Warehouse Opening Time.</comment>
+            </field>
+            <field id="timeclose" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Ware house Close Time</label>
+                <comment>Enter Warehouse Closing Time.</comment>
             </field>
         </group>
     </section>

@@ -17,6 +17,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     const XML_PATH_DELIVERYTIME_API = 'deliverytime/general/api';
     const XML_PATH_DELIVERYTIME_PACKAGETIME = 'deliverytime/general/packagetime';
     const XML_PATH_DELIVERYTIME_WAREHOUSE = 'deliverytime/general/warehouse';
+    const XML_PATH_DELIVERYTIME_WAREHOUSEOPEN = 'deliverytime/general/timeopen';
+    const XML_PATH_DELIVERYTIME_WAREHOUSECLOSE = 'deliverytime/general/timeclose';
 
 
     public function __construct(
@@ -37,5 +39,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getWareHouseAddress() {
         return json_encode($this->scopeConfig->getValue(self::XML_PATH_DELIVERYTIME_WAREHOUSE, ScopeConfigInterface::SCOPE_TYPE_DEFAULT), true);
+    }
+
+    public function getWareHouseTimeOpen() {
+        return json_encode($this->scopeConfig->getValue(self::XML_PATH_DELIVERYTIME_WAREHOUSEOPEN, ScopeConfigInterface::SCOPE_TYPE_DEFAULT), true);
+    }
+
+    public function getWareHouseTimeClose() {
+        return json_encode($this->scopeConfig->getValue(self::XML_PATH_DELIVERYTIME_WAREHOUSECLOSE, ScopeConfigInterface::SCOPE_TYPE_DEFAULT), true);
     }
 }
