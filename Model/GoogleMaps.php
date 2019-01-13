@@ -59,41 +59,13 @@ class GoogleMaps implements GoogleMapsInterface
         $apiKey = $result = str_replace('"', '', $this->data->getApiKey());
         $warehouseAddress = str_replace('"', '', $this->data->getWareHouseAddress());
         $origin = str_replace(' ', '+', $warehouseAddress);
-//        $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=Codilar+Technologies&destinations=745,+5th+main+Srinagara+Bengaluru+560050&key=AIzaSyCgJic5ZawDAttM6EJhShjEzw-CWfBYGyA"
-        $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$origin."&destinations=".$destination."&key=".$apiKey;
+//        $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$origin."&destinations=".$destination."&key=".$apiKey;
+        $url = "https://maps.googleapis.com/maps/api/directions/json?origin=".$origin."&destination=".$destination."&key=".$apiKey;
         $this->logger->info($url);
+        $mapsApi = curl_init($url);
+        curl_setopt($mapsApi, CURLOPT_RETURNTRANSFER, true);
+        $mapsData = curl_exec($mapsApi);
 
-        /* to do*/
-//        $mapsApi = curl_init($url);
-//        $mapsData = curl_exec($mapsApi);
-        $mapsData = '{
-   "destination_addresses" : [
-      "745, 5th Main Rd, Srinivasanagara, Hanumanthnagar, Banashankari Stage I, Banashankari, Bengaluru, Karnataka 560019, India"
-   ],
-   "origin_addresses" : [
-      "Sai Manasa, 703, 30th Main Rd, Jayanagar 9th Block East, Kuvempu Nagar, Stage 2, BTM 2nd Stage, Bengaluru, Karnataka 560076, India"
-   ],
-   "rows" : [
-      {
-         "elements" : [
-            {
-               "distance" : {
-                  "text" : "5.5 mi",
-                  "value" : 8839
-               },
-               "duration" : {
-                  "text" : "32 mins",
-                  "value" : 1896
-               },
-               "status" : "OK"
-            }
-         ]
-      }
-   ],
-   "status" : "OK"
-}';
         return \json_decode($mapsData, true);
     }
-
-
 }

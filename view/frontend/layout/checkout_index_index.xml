@@ -14,10 +14,14 @@
                                             <item name="children" xsi:type="array">
                                                 <item name="payment" xsi:type="array">
                                                     <item name="children" xsi:type="array">
-                                                        <item name="afterMethods" xsi:type="array">
+                                                        <item name="payments-list" xsi:type="array">
                                                             <item name="children" xsi:type="array">
-                                                                <item name="deliverytime" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Codilar_DeliveryTimeEstimation/js/delivery_time</item>
+                                                                <item name="before-place-order" xsi:type="array">
+                                                                    <item name="children" xsi:type="array">
+                                                                        <item name="deliverytime" xsi:type="array">
+                                                                            <item name="component" xsi:type="string">Codilar_DeliveryTimeEstimation/js/delivery_time</item>
+                                                                        </item>
+                                                                    </item>
                                                                 </item>
                                                             </item>
                                                         </item>

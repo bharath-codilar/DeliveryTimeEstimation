@@ -15,6 +15,7 @@ use Magento\Checkout\Model\Session;
 use Psr\Log\LoggerInterface;
 use Codilar\DeliveryTimeEstimation\Api\GoogleMapsInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Quote\Api\CartRepositoryInterface;
 
 class DeliveryTime implements ConfigProviderInterface
 {
@@ -38,6 +39,10 @@ class DeliveryTime implements ConfigProviderInterface
      * @var TimezoneInterface
      */
     private $timezone;
+    /**
+     * @var CartRepositoryInterface
+     */
+    private $quoteRepository;
 
     /**
      * DeliveryTime constructor.
@@ -46,13 +51,15 @@ class DeliveryTime implements ConfigProviderInterface
      * @param Data $data
      * @param GoogleMapsInterface $googleMaps
      * @param TimezoneInterface $timezone
+     * @param CartRepositoryInterface $quoteRepository
      */
     public function __construct(
         Session $checkoutSession,
         LoggerInterface $logger,
         Data $data,
         GoogleMapsInterface $googleMaps,
-        TimezoneInterface $timezone
+        TimezoneInterface $timezone,
+        CartRepositoryInterface $quoteRepository
      )
     {
         $this->checkoutSession = $checkoutSession;
@@ -60,6 +67,7 @@ class DeliveryTime implements ConfigProviderInterface
         $this->googleMaps = $googleMaps;
         $this->data = $data;
         $this->timezone = $timezone;
+        $this->quoteRepository = $quoteRepository;
     }
 
     /**
@@ -73,8 +81,12 @@ class DeliveryTime implements ConfigProviderInterface
         $address = $this->checkoutSession->getQuote()->getShippingAddress();
         $this->logger->info($address->getPostcode());
         $response = $this->googleMaps->getLocation($address);
-        $travelTime = $response['rows'][0]['elements'][0]['duration']['text'];
-//        $travelTime =  "1 hour 30 mins";  hard code time to c value
+//        $travelTime = $response['rows'][0]['elements'][0]['duration']['text'];
+        $latitude = $response['routes'][0]['legs'][0]['end_location']['lat'];
+        $longitude = $response['routes'][0]['legs'][0]['end_location']['lng'];
+        $this->saveLatLong($latitude, $longitude);
+        $travelTime = $response['routes'][0]['legs'][0]['duration']['text'];
+//        $travelTime =  "1 hour 30 mins";
         $passVariables['time'] = $this->getTotalDeliveryTime($travelTime);
         return $passVariables;
     }
@@ -90,5 +102,12 @@ class DeliveryTime implements ConfigProviderInterface
         $qty = $this->checkoutSession->getQuote()->getItemsQty();
         $packingTime = (int)str_replace('"', '', $this->data->getPackageTime());
         return $qty * $packingTime;
+    }
+
+    public function saveLatLong($latitude, $longitude) {
+        $quote = $this->checkoutSession->getQuote();
+        $quote->setData('latitude', $latitude);
+        $quote->setData('longitude', $longitude);
+        $this->quoteRepository->save($quote);
     }
 }
